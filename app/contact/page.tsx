@@ -55,14 +55,14 @@ export default function ContactPage() {
           <div className="rounded-xl bg-ink-900 p-8 text-white">
             <h2 className="text-2xl font-bold">Ready to book a load?</h2>
             <p className="mt-3 text-sm leading-relaxed text-neutral-300">
-              The quickest route is our quote form — give us the route, the cargo and the date and
+              Register a free account, log your request, and follow it from submission to delivery. Give us the route, the cargo and the date and
               we&apos;ll reply within two working hours with availability and a fixed price.
             </p>
             <Link
-              href="/quote"
+              href="/portal/new"
               className="mt-6 inline-block rounded-md bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700"
             >
-              Open the quote form
+              Open the request form
             </Link>
           </div>
         </div>

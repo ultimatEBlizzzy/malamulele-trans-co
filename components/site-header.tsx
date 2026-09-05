@@ -3,13 +3,14 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { Menu, Phone, Truck, X } from "lucide-react"
+import { LayoutDashboard, Menu, Phone, Truck, X } from "lucide-react"
 import { nav, site } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
-export function SiteHeader() {
+export function SiteHeader({ userName }: { userName?: string | null }) {
   const [open, setOpen] = useState(false)
   const pathname = usePathname()
+  const signedIn = Boolean(userName)
 
   return (
     <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/90 backdrop-blur">
@@ -59,12 +60,29 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/quote"
-            className="hidden rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 sm:inline-flex"
-          >
-            Get a quote
-          </Link>
+          {signedIn ? (
+            <Link
+              href="/portal"
+              className="hidden items-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 sm:inline-flex"
+            >
+              <LayoutDashboard className="size-4" /> My portal
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="hidden rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:text-ink-900 sm:inline-flex"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/register"
+                className="hidden rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 sm:inline-flex"
+              >
+                Register
+              </Link>
+            </>
+          )}
           <a
             href={`tel:${site.phone.replace(/\s/g, "")}`}
             className="inline-flex size-10 items-center justify-center rounded-md border border-neutral-200 text-neutral-700 sm:hidden"
@@ -96,13 +114,32 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/quote"
-              onClick={() => setOpen(false)}
-              className="mt-3 mb-3 rounded-md bg-brand-600 px-4 py-2.5 text-center text-sm font-semibold text-white"
-            >
-              Get a quote
-            </Link>
+            {signedIn ? (
+              <Link
+                href="/portal"
+                onClick={() => setOpen(false)}
+                className="mt-3 mb-3 rounded-md bg-brand-600 px-4 py-2.5 text-center text-sm font-semibold text-white"
+              >
+                My portal
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="mt-3 rounded-md border border-neutral-300 px-4 py-2.5 text-center text-sm font-semibold text-ink-900"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setOpen(false)}
+                  className="mt-2 mb-3 rounded-md bg-brand-600 px-4 py-2.5 text-center text-sm font-semibold text-white"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       )}

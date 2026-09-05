@@ -43,10 +43,10 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/quote"
+                href="/portal/new"
                 className="inline-flex items-center gap-2 rounded-md bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
               >
-                Request a quote <ArrowRight className="size-4" />
+                Log a request <ArrowRight className="size-4" />
               </Link>
               <Link
                 href="/services"
@@ -195,7 +195,7 @@ export default function HomePage() {
                 Need a truck this week?
               </h2>
               <p className="mt-3 text-brand-50">
-                Send us the details and we&apos;ll come back with availability and a fixed price.
+                Register, log your request, and track it from submission to delivery.
               </p>
               <p className="mt-4 flex items-center gap-2 text-sm text-brand-100">
                 <Clock className="size-4" /> {site.hours}
@@ -203,10 +203,10 @@ export default function HomePage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/quote"
+                href="/portal/new"
                 className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-brand-700 hover:bg-brand-50"
               >
-                Get a quote
+                Log a request
               </Link>
               <a
                 href={`tel:${site.phone.replace(/\s/g, "")}`}

@@ -40,10 +40,10 @@ export default function ServicesPage() {
                   ))}
                 </ul>
                 <Link
-                  href={`/quote?service=${s.slug}`}
+                  href={`/portal/new?service=${s.slug}`}
                   className="mt-6 inline-block rounded-md bg-ink-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink-800"
                 >
-                  Quote this service
+                  Request this service
                 </Link>
               </div>
             )
