@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { ArrowLeft, Check } from "lucide-react"
 import { currentUser } from "@/lib/auth"
 import { getRequest, listUpdates } from "@/lib/store"
@@ -17,7 +17,8 @@ export default async function RequestPage({
   params: Promise<{ reference: string }>
 }) {
   const { reference } = await params
-  const user = (await currentUser())!
+  const user = await currentUser()
+  if (!user) redirect("/login")
   const req = await getRequest(reference, user.id)
   if (!req) notFound()
 

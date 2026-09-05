@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import { ArrowRight, Inbox, Plus } from "lucide-react"
 import { currentUser } from "@/lib/auth"
 import { listRequests } from "@/lib/store"
@@ -14,7 +15,8 @@ function serviceLabel(slug: string | null) {
 }
 
 export default async function PortalPage() {
-  const user = (await currentUser())!
+  const user = await currentUser()
+  if (!user) redirect("/login")
   const requests = await listRequests(user.id)
 
   const active = requests.filter((r) => !["delivered", "cancelled"].includes(r.status))
