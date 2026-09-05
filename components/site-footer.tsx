@@ -66,7 +66,12 @@ export function SiteFooter() {
           <span>
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </span>
-          <span>Registered transport operator · Limpopo, South Africa</span>
+          <span>
+            Registered transport operator · Limpopo, South Africa ·{" "}
+            <Link href="/admin/login" className="hover:text-neutral-300">
+              Staff
+            </Link>
+          </span>
         </div>
       </div>
     </footer>

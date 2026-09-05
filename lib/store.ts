@@ -385,3 +385,121 @@ export async function cancelRequest(reference: string, userId: number) {
 export async function storageMode() {
   return (await tryPg()) ? "postgres" : "local file (.data/portal.json)"
 }
+
+/* -------------------------- admin / staff views -------------------------- */
+
+export type AdminRequestRow = RequestRow & {
+  customer_name: string
+  customer_email: string
+  customer_phone: string | null
+  customer_company: string | null
+}
+
+export async function adminListRequests(): Promise<AdminRequestRow[]> {
+  const p = await tryPg()
+  if (p) {
+    const r = await p.query<AdminRequestRow>(
+      `select r.*, u.name as customer_name, u.email as customer_email,
+              u.phone as customer_phone, u.company as customer_company
+       from requests r join users u on u.id = r.user_id
+       order by r.created_at desc`,
+    )
+    return r.rows
+  }
+  const db = await readFileDb()
+  return db.requests
+    .slice()
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    .map((r) => {
+      const u = db.users.find((x) => x.id === r.user_id)
+      return {
+        ...r,
+        customer_name: u?.name ?? "Unknown",
+        customer_email: u?.email ?? "—",
+        customer_phone: u?.phone ?? null,
+        customer_company: u?.company ?? null,
+      }
+    })
+}
+
+export async function adminGetRequest(reference: string): Promise<AdminRequestRow | null> {
+  const p = await tryPg()
+  if (p) {
+    const r = await p.query<AdminRequestRow>(
+      `select r.*, u.name as customer_name, u.email as customer_email,
+              u.phone as customer_phone, u.company as customer_company
+       from requests r join users u on u.id = r.user_id
+       where r.reference = $1`,
+      [reference],
+    )
+    return r.rows[0] ?? null
+  }
+  const all = await adminListRequests()
+  return all.find((r) => r.reference === reference) ?? null
+}
+
+export async function adminUpdateRequest(input: {
+  reference: string
+  status: string
+  note: string | null
+  quotedAmount: string | null
+}) {
+  const p = await tryPg()
+  if (p) {
+    const r = await p.query<RequestRow>(
+      `update requests
+         set status = $2,
+             quoted_amount = coalesce($3, quoted_amount),
+             updated_at = now()
+       where reference = $1
+       returning *`,
+      [input.reference, input.status, input.quotedAmount],
+    )
+    const row = r.rows[0]
+    if (!row) return null
+    await p.query("insert into request_updates (request_id, status, note) values ($1,$2,$3)", [
+      row.id,
+      input.status,
+      input.note,
+    ])
+    return row
+  }
+  const db = await readFileDb()
+  const row = db.requests.find((x) => x.reference === input.reference)
+  if (!row) return null
+  row.status = input.status
+  if (input.quotedAmount) row.quoted_amount = input.quotedAmount
+  row.updated_at = now()
+  db.updates.push({
+    id: ++db.seq.updates,
+    request_id: row.id,
+    status: input.status,
+    note: input.note,
+    created_at: now(),
+  })
+  await writeFileDb(db)
+  return row
+}
+
+export async function adminStats() {
+  const rows = await adminListRequests()
+  const byStatus: Record<string, number> = {}
+  for (const r of rows) byStatus[r.status] = (byStatus[r.status] ?? 0) + 1
+
+  const p = await tryPg()
+  let customers: number
+  if (p) {
+    const c = await p.query<{ count: string }>("select count(*)::text as count from users")
+    customers = Number(c.rows[0]?.count ?? 0)
+  } else {
+    customers = (await readFileDb()).users.length
+  }
+
+  return {
+    total: rows.length,
+    customers,
+    open: rows.filter((r) => !["delivered", "cancelled"].includes(r.status)).length,
+    needsAction: rows.filter((r) => r.status === "submitted").length,
+    byStatus,
+  }
+}
