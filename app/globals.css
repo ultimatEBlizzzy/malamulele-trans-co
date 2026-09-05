@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-brand-50: #fff8ed;
+  --color-brand-100: #ffefd4;
+  --color-brand-200: #ffdba8;
+  --color-brand-300: #ffc071;
+  --color-brand-400: #ff9a38;
+  --color-brand-500: #fe7d12;
+  --color-brand-600: #ef6108;
+  --color-brand-700: #c64908;
+  --color-brand-800: #9d3a0f;
+  --color-brand-900: #7e3110;
+
+  --color-ink-700: #2a3342;
+  --color-ink-800: #1b2331;
+  --color-ink-900: #111827;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--color-ink-900);
+  -webkit-font-smoothing: antialiased;
+}
+
+.container-x {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1.25rem;
+}
