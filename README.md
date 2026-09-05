@@ -84,6 +84,24 @@ no code change needed. You can also run `pnpm db:push` to create them up front.
 | `/portal`                      | Dashboard — all your requests                   |
 | `/portal/new`                  | Log a new transport request                     |
 | `/portal/requests/[reference]` | Track one request: progress + timeline          |
+| `/admin/login`                 | Staff sign in (uses `ADMIN_PASSWORD`)           |
+| `/admin`                       | Staff console — every request from every customer |
+| `/admin/requests/[reference]`  | Set status, add a quote and a customer note     |
+
+## Staff admin
+
+Go to **`/admin/login`** (there's also a small "Staff" link in the footer) and enter
+the `ADMIN_PASSWORD` from your `.env`.
+
+From the console you can see every request with its customer, then open one to:
+
+- **Set the status** — Submitted → Under review → Quote sent → Booking confirmed
+  → In transit → Delivered (or Cancelled)
+- **Add a quoted amount** in rand
+- **Write a note** for the customer
+
+Saving pushes all of it straight to that customer's tracking page and timeline.
+Staff sessions last 12 hours.
 
 ## Editing the content
 
